@@ -1,8 +1,7 @@
-
 import React from 'react';
 
 interface HeaderBannerProps {
-  title: string;
+  title: string | React.ReactNode;
   subtitle?: string;
   children?: React.ReactNode;
 }

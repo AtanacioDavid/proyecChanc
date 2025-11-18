@@ -25,10 +25,6 @@ const Home: React.FC<HomeProps> = ({ setActivePage }) => {
 
   return (
     <div>
-      <div className="flex justify-end gap-2 mb-8">
-        <Button variant="secondary" size="sm" onClick={() => setActivePage('Login')}>Iniciar Sesión</Button>
-        <Button size="sm" onClick={() => setActivePage('Register')}>Registrarse</Button>
-      </div>
       <div className="space-y-12">
         <section className="text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800">Aquí comienza tu camino.</h1>

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
-// FIX: Import the Message type to be used for explicit typing.
 import { Conversation, Message } from '../types';
-// FIX: Import the Button component to resolve the 'Cannot find name 'Button'' error.
 import Button from '../components/ui/Button';
 
 const mockConversations: Conversation[] = [
@@ -41,7 +39,6 @@ const Messages: React.FC = () => {
 
         const updatedConversations = conversations.map(c => {
             if (c.id === selectedId) {
-                // FIX: Explicitly type the new message object to ensure the 'sender' property conforms to the 'me' | 'other' literal type.
                 const newMessageObj: Message = {
                     id: Date.now(),
                     sender: 'me',
@@ -78,7 +75,9 @@ const Messages: React.FC = () => {
                             <img src={conv.avatar} alt={conv.title} className="w-12 h-12 rounded-full"/>
                             <div>
                                 <p className="font-semibold text-slate-800">{conv.title}</p>
-                                <p className="text-sm text-slate-500 truncate">{conv.messages[conv.messages.length - 1].text}</p>
+                                <p className="text-sm text-slate-500 truncate">
+                                  {conv.messages.length > 0 ? conv.messages[conv.messages.length - 1].text : 'No hay mensajes'}
+                                </p>
                             </div>
                         </div>
                     ))}

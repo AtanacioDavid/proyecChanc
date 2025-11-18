@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
@@ -10,11 +9,36 @@ import Business from './pages/Business';
 import Messages from './pages/Messages';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { Page } from './types';
+import Landing from './pages/Landing';
+import { Page, User } from './types';
 
 const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [activePage, setActivePage] = useState<Page>('Inicio');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'landing' | 'login' | 'register'>('landing');
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('userInfo');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setActivePage('Inicio');
+    } else {
+      setAuthMode('landing');
+    }
+  }, []);
+
+  const handleLoginSuccess = (userData: User) => {
+    localStorage.setItem('userInfo', JSON.stringify(userData));
+    setUser(userData);
+    setActivePage('Inicio');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userInfo');
+    setUser(null);
+    setAuthMode('landing'); // Vuelve a la página de bienvenida al cerrar sesión
+  };
 
   const renderPage = () => {
     switch (activePage) {
@@ -43,12 +67,16 @@ const App: React.FC = () => {
     </svg>
   );
 
-  if (activePage === 'Login') {
-    return <Login setActivePage={setActivePage} />;
-  }
-
-  if (activePage === 'Register') {
-    return <Register setActivePage={setActivePage} />;
+  if (!user) {
+    switch(authMode) {
+      case 'login':
+        return <Login onSwitchToRegister={() => setAuthMode('register')} onLoginSuccess={handleLoginSuccess} />;
+      case 'register':
+        return <Register onSwitchToLogin={() => setAuthMode('login')} onRegisterSuccess={handleLoginSuccess} />;
+      case 'landing':
+      default:
+        return <Landing onSwitchToLogin={() => setAuthMode('login')} onSwitchToRegister={() => setAuthMode('register')} />;
+    }
   }
 
   return (
@@ -58,7 +86,14 @@ const App: React.FC = () => {
           <MenuIcon />
         </button>
       </div>
-      <Sidebar activePage={activePage} setActivePage={setActivePage} isOpen={isSidebarOpen} setOpen={setSidebarOpen} />
+      <Sidebar 
+        user={user}
+        onLogout={handleLogout}
+        activePage={activePage} 
+        setActivePage={setActivePage} 
+        isOpen={isSidebarOpen} 
+        setOpen={setSidebarOpen} 
+      />
       <main className="flex-1 overflow-y-auto">
         <div className="p-4 md:p-8">
           {renderPage()}

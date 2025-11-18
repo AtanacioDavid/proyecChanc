@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useRef } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
@@ -9,27 +10,46 @@ const initialProfile: UserProfile = {
     name: 'Juan Pérez',
     email: 'ejemplo@mail.com',
     photoUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    interests: ['Desarrollo Sostenible', 'Tecnología Cívica', 'Inteligencia Artificial'],
+    interests: ['Tecnológico'],
     education: [{ institution: 'Universidad Nacional', degree: 'Ingeniería en Sistemas', year: '2024' }],
     projects: [
-        { id: 1, name: 'EcoTech', role: 'Líder', startDate: '2023-01-15', endDate: '2023-12-20' },
-        { id: 2, name: 'ArteUrbano', role: 'Líder', startDate: '2024-02-01', endDate: 'Presente' }
+        { id: 1, name: 'EcoTech', role: 'Líder', startDate: '2023-01-15', endDate: '2023-12-20', status: 'Ganador Hackathon' },
+        { id: 2, name: 'ArteUrbano', role: 'Líder', startDate: '2024-02-01', endDate: 'Presente', status: 'Incubado' }
     ],
-    recommendations: [{ id: 1, peerName: 'Ana Gómez', skill: 'Liderazgo y gestión de equipos' }]
+    recommendations: [{ id: 1, peerName: 'Ana Gómez', skill: 'Liderazgo y gestión de equipos' }],
+    badges: [
+        { id: 1, name: 'Innovación Ágil', issuer: 'Globant', icon: '🚀', date: '2023' },
+        { id: 2, name: 'Finalista Hackathon 2024', issuer: 'Muni Digital', icon: '🏆', date: '2024' }
+    ]
 };
 
+const predefinedCategories = ['Social', 'Económico', 'Académico', 'Ambiental', 'Tecnológico', 'Artístico', 'Salud', 'Deportivo'];
 
 const DigitalCV: React.FC = () => {
     const [profile, setProfile] = useState<UserProfile>(initialProfile);
-    const [fileName, setFileName] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setFileName(e.target.files[0].name);
-            setProfile(p => ({...p, photoUrl: URL.createObjectURL(e.target.files[0])}));
-        } else {
-            setFileName('');
+            const file = e.target.files[0];
+            const imageUrl = URL.createObjectURL(file);
+            setProfile(p => ({...p, photoUrl: imageUrl}));
         }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
+    const toggleInterest = (interest: string) => {
+        setProfile(prev => {
+            const exists = prev.interests.includes(interest);
+            if (exists) {
+                return { ...prev, interests: prev.interests.filter(i => i !== interest) };
+            } else {
+                return { ...prev, interests: [...prev.interests, interest] };
+            }
+        });
     };
 
     const handlePrint = () => {
@@ -43,21 +63,70 @@ const DigitalCV: React.FC = () => {
       />
 
       <Card>
-        <div className="flex items-start space-x-6">
-            <img src={profile.photoUrl} alt="Foto de perfil" className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"/>
-            <div>
+        <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+            <div className="relative group">
+                <img 
+                    src={profile.photoUrl} 
+                    alt="Foto de perfil" 
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+                />
+                <div 
+                    onClick={triggerFileInput}
+                    className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                    <span className="text-white text-sm font-bold">Cambiar Foto</span>
+                </div>
+                <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    accept="image/*" 
+                    className="hidden" 
+                />
+            </div>
+            <div className="text-center md:text-left">
                 <h2 className="text-3xl font-bold text-slate-800">{profile.name}</h2>
                 <p className="text-slate-600">{profile.email}</p>
+                <p className="text-sm text-slate-400 mt-2 italic">Haz clic en la foto para actualizarla</p>
             </div>
+        </div>
+      </Card>
+
+      <Card>
+        <h3 className="text-2xl font-bold text-slate-800 mb-6">Validaciones e Insignias 🏅</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {profile.badges.map(badge => (
+                <div key={badge.id} className="flex items-center gap-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div className="text-3xl">{badge.icon}</div>
+                    <div>
+                        <h4 className="font-bold text-amber-900">{badge.name}</h4>
+                        <p className="text-xs text-amber-700">Otorgado por: {badge.issuer} ({badge.date})</p>
+                    </div>
+                </div>
+            ))}
         </div>
       </Card>
       
       <Card>
-        <h3 className="text-2xl font-bold text-slate-800 mb-4">Intereses</h3>
+        <h3 className="text-2xl font-bold text-slate-800 mb-4">Mis Intereses</h3>
+        <p className="text-slate-500 mb-4 text-sm">Selecciona las áreas que definen tu perfil:</p>
         <div className="flex flex-wrap gap-2">
-            {profile.interests.map((interest, index) => (
-                <span key={index} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-semibold">{interest}</span>
-            ))}
+            {predefinedCategories.map((category) => {
+                const isSelected = profile.interests.includes(category);
+                return (
+                    <button
+                        key={category}
+                        onClick={() => toggleInterest(category)}
+                        className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors border ${
+                            isSelected 
+                            ? 'bg-teal-600 text-white border-teal-600' 
+                            : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                        }`}
+                    >
+                        {category} {isSelected && '✓'}
+                    </button>
+                );
+            })}
         </div>
       </Card>
       
@@ -74,13 +143,26 @@ const DigitalCV: React.FC = () => {
       </Card>
 
       <Card>
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Mis Proyectos en Chance</h2>
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">Experiencia en Proyectos</h2>
          <div className="space-y-4">
             {profile.projects.map(proj => (
-                <div key={proj.id} className="p-3 bg-slate-50 rounded-md border border-slate-200">
-                    <p className="font-bold text-slate-800">{proj.name}</p>
-                    <p className="text-sm text-slate-600">Rol: {proj.role}</p>
-                    <p className="text-xs text-slate-400">{proj.startDate} - {proj.endDate}</p>
+                <div key={proj.id} className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="font-bold text-lg text-slate-800">{proj.name}</p>
+                            <p className="text-sm text-slate-600">Rol: {proj.role}</p>
+                        </div>
+                        {proj.status && (
+                            <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                                proj.status === 'Ganador Hackathon' ? 'bg-yellow-100 text-yellow-800' :
+                                proj.status === 'Incubado' ? 'bg-purple-100 text-purple-800' :
+                                'bg-slate-100 text-slate-600'
+                            }`}>
+                                {proj.status}
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">{proj.startDate} - {proj.endDate}</p>
                 </div>
             ))}
         </div>

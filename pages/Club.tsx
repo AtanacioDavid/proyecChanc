@@ -145,12 +145,29 @@ const Club: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 pb-8">
             <HeaderBanner 
                 title="Club"
                 subtitle="Un ecosistema para crecer. Conecta, colabora y accede a beneficios exclusivos."
             />
             {renderContent()}
+
+            <div className="mt-12 border-t border-slate-200 pt-8">
+                <Card className="bg-gradient-to-r from-slate-800 to-slate-900 text-white transform hover:scale-[1.01] transition-transform duration-300">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div className="text-center md:text-left">
+                            <h3 className="text-2xl font-bold text-rose-400">Membresía Chance Club</h3>
+                            <p className="text-slate-300 mt-2">Accede a todos los espacios, mentorías exclusivas y el fondo de inversión.</p>
+                        </div>
+                        <div className="flex flex-col items-center md:items-end">
+                            <span className="text-3xl font-bold text-white mb-2">$10 <span className="text-sm text-slate-400 font-normal">/mes</span></span>
+                            <Button className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 text-lg shadow-lg shadow-rose-500/30">
+                                Asociarme Ahora
+                            </Button>
+                        </div>
+                    </div>
+                </Card>
+            </div>
         </div>
     );
 };

@@ -1,10 +1,11 @@
 
+
 import React, { useState } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
 import { Opportunity } from '../types';
 
-type Category = 'Todos' | 'Empleo' | 'Pasantías' | 'Concursos' | 'Hackatones';
+type Category = 'Todos' | 'Empleo' | 'Pasantías' | 'Concursos' | 'Hackatones' | 'Becas';
 
 const allOpportunities: Opportunity[] = [
   { id: 1, title: 'Desarrollador Junior', category: 'Empleo', date: '2025-09-20' },
@@ -13,12 +14,14 @@ const allOpportunities: Opportunity[] = [
   { id: 4, title: 'Hackatón IA', category: 'Hackatones', date: '2025-12-01' },
   { id: 5, title: 'Diseñador UX/UI Senior', category: 'Empleo', date: '2025-09-25' },
   { id: 6, title: 'Competencia de Robótica', category: 'Concursos', date: '2025-10-20' },
+  { id: 7, title: 'Beca Certified Tech Developer', category: 'Becas', date: '2025-08-10' },
+  { id: 8, title: 'Becas Google Cloud', category: 'Becas', date: '2025-09-01' },
 ];
 
 const Opportunities: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('Todos');
 
-  const categories: Category[] = ['Todos', 'Empleo', 'Pasantías', 'Concursos', 'Hackatones'];
+  const categories: Category[] = ['Todos', 'Empleo', 'Pasantías', 'Concursos', 'Hackatones', 'Becas'];
 
   const filteredOpportunities = allOpportunities.filter(op => 
     activeCategory === 'Todos' || op.category === activeCategory
@@ -30,6 +33,7 @@ const Opportunities: React.FC = () => {
         case 'Pasantías': return '🎓';
         case 'Concursos': return '🏆';
         case 'Hackatones': return '💻';
+        case 'Becas': return '📜';
         default: return '📢';
     }
   }
@@ -38,7 +42,7 @@ const Opportunities: React.FC = () => {
     <div className="space-y-8">
       <HeaderBanner 
         title="Convocatorias"
-        subtitle="Encuentra oportunidades para crecer: empleo, pasantías, concursos y hackatones."
+        subtitle="Encuentra oportunidades para crecer: empleo, becas, concursos y hackatones."
       />
       
       <div className="flex flex-wrap gap-2">

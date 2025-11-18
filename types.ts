@@ -1,23 +1,32 @@
 
+
 import { NAV_ITEMS } from './constants';
 
 export type NavPage = typeof NAV_ITEMS[number]['name'];
-export type Page = NavPage | 'Login' | 'Register';
+export type Page = NavPage;
 
 export interface Project {
-  id: number;
+  _id: string; 
   name: string;
   description: string;
   location: string;
   objectives: string;
-  leader: string;
+  leader: { 
+    _id: string;
+    name: string;
+    email: string;
+  };
   isRecruiting?: boolean;
+  createdAt?: string;
+  // Nuevos campos para incubación y patrocinio
+  incubatedBy?: string; // Nombre de la empresa que incuba
+  sponsors?: string[]; // Lista de empresas patrocinadoras
 }
 
 export interface Opportunity {
   id: number;
   title: string;
-  category: 'Empleo' | 'Pasantías' | 'Concursos' | 'Hackatones';
+  category: 'Empleo' | 'Pasantías' | 'Concursos' | 'Hackatones' | 'Becas';
   date: string;
 }
 
@@ -25,7 +34,19 @@ export interface BusinessProject {
   id: number;
   title: string;
   description: string;
-  company: string;
+  company?: string; // Opcional si es un proyecto de jóvenes
+  teamName?: string; // Nombre del equipo de jóvenes
+  status?: 'Buscando Incubación' | 'Incubado' | 'Buscando Inversión';
+  tags?: string[];
+}
+
+export interface CommunityProject {
+  id: number;
+  title: string;
+  description: string;
+  impact: string; // Impacto social/comunitario
+  needs: string; // Qué necesita (Fondos, Mentoria, Equipamiento)
+  location: string;
 }
 
 export interface CompanyChallenge {
@@ -34,6 +55,14 @@ export interface CompanyChallenge {
   description: string;
   company: string;
   deadline: string;
+}
+
+// --- User Authentication ---
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  token: string;
 }
 
 // --- Digital CV Types ---
@@ -48,12 +77,21 @@ export interface CVProject {
     role: string;
     startDate: string;
     endDate: string;
+    status?: 'Finalizado' | 'En curso' | 'Ganador Hackathon' | 'Incubado'; // Estado del proyecto
 }
 export interface Recommendation {
     id: number;
     peerName: string;
     skill: string;
 }
+export interface Badge {
+    id: number;
+    name: string;
+    issuer: string; // Empresa u organización que la otorga
+    icon: string;
+    date: string;
+}
+
 export interface UserProfile {
     name: string;
     email: string;
@@ -62,6 +100,7 @@ export interface UserProfile {
     education: Education[];
     projects: CVProject[];
     recommendations: Recommendation[];
+    badges: Badge[]; // Nuevas insignias
 }
 
 
