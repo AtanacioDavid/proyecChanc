@@ -1,39 +1,41 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { UserProfile, User } from '../types';
 
-// Datos de ejemplo para rellenar el CV inicialmente
-const mockInitialData = {
-    interests: ['Tecnológico'],
-    education: [{ institution: 'Universidad Nacional', degree: 'Ingeniería en Sistemas', year: '2024' }],
-    projects: [
-        { id: 1, name: 'EcoTech', role: 'Líder', startDate: '2023-01-15', endDate: '2023-12-20', status: 'Ganador Hackathon' },
-        { id: 2, name: 'ArteUrbano', role: 'Líder', startDate: '2024-02-01', endDate: 'Presente', status: 'Incubado' }
-    ],
-    recommendations: [{ id: 1, peerName: 'Ana Gómez', skill: 'Liderazgo y gestión de equipos' }],
-    badges: [
-        { id: 1, name: 'Innovación Ágil', issuer: 'Globant', icon: '🚀', date: '2023' },
-        { id: 2, name: 'Finalista Hackathon 2024', issuer: 'Muni Digital', icon: '🏆', date: '2024' }
-    ]
-};
+// Datos de ejemplo para rellenar el historial del CV
+const mockProjectHistory = [
+    { id: 1, name: 'EcoTech', role: 'Líder', startDate: '2023-01-15', endDate: '2023-12-20', status: 'Ganador Hackathon' },
+    { id: 2, name: 'ArteUrbano', role: 'Colaborador', startDate: '2024-02-01', endDate: 'Presente', status: 'Incubado' }
+];
 
-const predefinedCategories = ['Social', 'Económico', 'Académico', 'Ambiental', 'Tecnológico', 'Artístico', 'Salud', 'Deportivo'];
+const mockBadges = [
+    { id: 1, name: 'Innovación Ágil', issuer: 'Globant', icon: '🚀', date: '2023' },
+    { id: 2, name: 'Finalista Hackathon 2024', issuer: 'Muni Digital', icon: '🏆', date: '2024' }
+];
+
+// Simulamos habilidades blandas validadas por pares para el demo
+const mockSoftSkills = ["Liderazgo 🦁", "Comunicación 🗣️", "Trabajo en Equipo 🤝", "Resiliencia 🛡️"];
 
 const DigitalCV: React.FC = () => {
-    // Estado inicial seguro
+    // Estado inicial
     const [profile, setProfile] = useState<UserProfile>({
-        name: 'Usuario Invitado',
-        email: 'invitado@chance.app',
-        photoUrl: 'https://randomuser.me/api/portraits/lego/1.jpg',
-        ...mockInitialData
-    } as UserProfile); // Casting para facilitar el MVP
+        name: 'Usuario',
+        email: '',
+        photoUrl: '',
+        bio: '',
+        location: '',
+        interests: [],
+        education: [],
+        projects: mockProjectHistory as any,
+        recommendations: [{ id: 1, peerName: 'Ana Gómez', skill: 'Liderazgo y gestión de equipos' }],
+        badges: mockBadges,
+        softSkills: mockSoftSkills // Inicializamos con datos mock para que el usuario vea el resultado
+    });
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    // Efecto para cargar los datos del usuario REAL logueado
+    // Cargar datos REALES del usuario configurados en el Perfil
     useEffect(() => {
         const storedUser = localStorage.getItem('userInfo');
         if (storedUser) {
@@ -42,35 +44,16 @@ const DigitalCV: React.FC = () => {
                 ...prev,
                 name: realUser.name,
                 email: realUser.email,
-                // Mantenemos la foto aleatoria si no tiene una real guardada en BD, 
-                // o usamos una por defecto basada en el nombre para que sea consistente
-                photoUrl: prev.photoUrl.includes('randomuser') ? `https://ui-avatars.com/api/?name=${realUser.name}&background=f43f5e&color=fff&size=128` : prev.photoUrl
+                photoUrl: realUser.photoUrl || `https://ui-avatars.com/api/?name=${realUser.name}&background=f43f5e&color=fff&size=128`,
+                bio: realUser.bio || 'Sin biografía definida aún.',
+                location: realUser.location || 'Ubicación no especificada',
+                interests: realUser.interests || [],
+                education: realUser.education || [],
+                // Si el usuario ya tiene softSkills guardados, úsalos, sino usa los mock para el demo
+                softSkills: realUser.softSkills || mockSoftSkills 
             }));
         }
     }, []);
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            const imageUrl = URL.createObjectURL(file);
-            setProfile(p => ({...p, photoUrl: imageUrl}));
-        }
-    };
-
-    const triggerFileInput = () => {
-        fileInputRef.current?.click();
-    };
-
-    const toggleInterest = (interest: string) => {
-        setProfile(prev => {
-            const exists = prev.interests.includes(interest);
-            if (exists) {
-                return { ...prev, interests: prev.interests.filter(i => i !== interest) };
-            } else {
-                return { ...prev, interests: [...prev.interests, interest] };
-            }
-        });
-    };
 
     const handlePrint = () => {
         window.print();
@@ -80,103 +63,119 @@ const DigitalCV: React.FC = () => {
     <div className="space-y-8" id="cv-section">
       <HeaderBanner 
         title='"Tu historia no está en tu título, está en lo que creas."'
+        subtitle="Esta es tu hoja de vida profesional pública. Configura tus datos personales y académicos desde la sección 'Perfil'."
       />
 
-      <Card>
-        <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
-            <div className="relative group">
+      <Card className="border-l-4 border-teal-500">
+        <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8">
+            <div className="shrink-0">
                 <img 
                     src={profile.photoUrl} 
                     alt="Foto de perfil" 
-                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-slate-200"
-                />
-                <div 
-                    onClick={triggerFileInput}
-                    className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                >
-                    <span className="text-white text-sm font-bold">Cambiar Foto</span>
-                </div>
-                <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleFileChange} 
-                    accept="image/*" 
-                    className="hidden" 
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg bg-slate-200"
                 />
             </div>
-            <div className="text-center md:text-left">
-                <h2 className="text-3xl font-bold text-slate-800">{profile.name}</h2>
-                <p className="text-slate-600">{profile.email}</p>
-                <p className="text-sm text-slate-400 mt-2 italic">Este es tu perfil público visible para empresas.</p>
+            <div className="text-center md:text-left flex-1">
+                <h2 className="text-4xl font-bold text-slate-800">{profile.name}</h2>
+                <div className="flex flex-col md:flex-row gap-4 mt-2 justify-center md:justify-start text-slate-600 text-sm">
+                    <p>📧 {profile.email}</p>
+                    <p>📍 {profile.location}</p>
+                </div>
+                
+                <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-100 italic text-slate-700">
+                    "{profile.bio}"
+                </div>
+                
+                {profile.interests.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                        {profile.interests.map(interest => (
+                            <span key={interest} className="px-2 py-1 bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wide rounded">
+                                {interest}
+                            </span>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
       </Card>
 
-      <Card>
-        <h3 className="text-2xl font-bold text-slate-800 mb-6">Validaciones e Insignias 🏅</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {profile.badges.map(badge => (
-                <div key={badge.id} className="flex items-center gap-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <div className="text-3xl">{badge.icon}</div>
-                    <div>
-                        <h4 className="font-bold text-amber-900">{badge.name}</h4>
-                        <p className="text-xs text-amber-700">Otorgado por: {badge.issuer} ({badge.date})</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card>
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span>🏅</span> Validaciones e Insignias
+            </h3>
+            <div className="space-y-3">
+                {profile.badges.map(badge => (
+                    <div key={badge.id} className="flex items-center gap-4 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+                        <div className="text-2xl">{badge.icon}</div>
+                        <div>
+                            <h4 className="font-bold text-amber-900 text-sm">{badge.name}</h4>
+                            <p className="text-xs text-amber-700">{badge.issuer} • {badge.date}</p>
+                        </div>
                     </div>
-                </div>
-            ))}
-        </div>
-      </Card>
+                ))}
+            </div>
+          </Card>
+          
+          <Card>
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <span>🎓</span> Formación Académica
+            </h3>
+            <div className="space-y-4">
+                 {profile.education.length > 0 ? (
+                     profile.education.map((edu, index) => (
+                        <div key={index} className="pl-4 border-l-2 border-slate-200">
+                            <p className="font-bold text-slate-700">{edu.degree}</p>
+                            <p className="text-sm text-slate-500">{edu.institution}</p>
+                            <p className="text-xs text-slate-400">{edu.year}</p>
+                        </div>
+                     ))
+                 ) : (
+                     <div className="text-center p-4 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                         <p className="text-slate-500 text-sm mb-2">No has agregado formación académica.</p>
+                         <p className="text-xs text-rose-500">Ve a Perfil para completar esta sección.</p>
+                     </div>
+                 )}
+            </div>
+          </Card>
+      </div>
       
-      <Card>
-        <h3 className="text-2xl font-bold text-slate-800 mb-4">Mis Intereses</h3>
-        <p className="text-slate-500 mb-4 text-sm">Selecciona las áreas que definen tu perfil:</p>
-        <div className="flex flex-wrap gap-2">
-            {predefinedCategories.map((category) => {
-                const isSelected = profile.interests.includes(category);
-                return (
-                    <button
-                        key={category}
-                        onClick={() => toggleInterest(category)}
-                        className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors border ${
-                            isSelected 
-                            ? 'bg-teal-600 text-white border-teal-600' 
-                            : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
-                        }`}
-                    >
-                        {category} {isSelected && '✓'}
-                    </button>
-                );
-            })}
-        </div>
-      </Card>
-      
-      <Card>
-        <h3 className="text-2xl font-bold text-slate-800 mb-4">Formación Académica</h3>
-        <div className="space-y-3">
-             {profile.education.map((edu, index) => (
-                <div key={index}>
-                    <p className="font-semibold text-slate-700">{edu.degree}</p>
-                    <p className="text-sm text-slate-500">{edu.institution} - {edu.year}</p>
-                </div>
-             ))}
-        </div>
+      {/* NUEVA SECCIÓN: ADN Profesional (Soft Skills) */}
+      <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100">
+          <h2 className="text-2xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
+              🧠 ADN Profesional (Soft Skills)
+          </h2>
+          <p className="text-sm text-indigo-700 mb-6">Habilidades interpersonales validadas por equipos de proyecto.</p>
+          
+          <div className="flex flex-wrap gap-3">
+              {profile.softSkills && profile.softSkills.length > 0 ? (
+                  profile.softSkills.map((skill, index) => (
+                      <div key={index} className="bg-white border border-indigo-200 px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+                          <span className="font-bold text-indigo-800">{skill}</span>
+                          <span className="bg-indigo-100 text-indigo-600 text-[10px] px-1.5 py-0.5 rounded-full font-bold">Validado</span>
+                      </div>
+                  ))
+              ) : (
+                  <p className="text-indigo-400 italic">Aún no tienes habilidades blandas validadas.</p>
+              )}
+          </div>
       </Card>
 
       <Card>
         <h2 className="text-2xl font-bold text-slate-800 mb-6">Experiencia en Proyectos</h2>
          <div className="space-y-4">
             {profile.projects.map(proj => (
-                <div key={proj.id} className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div key={proj.id} className="p-5 bg-white rounded-lg border border-slate-200 shadow-sm hover:border-rose-200 transition-colors">
                     <div className="flex justify-between items-start">
                         <div>
-                            <p className="font-bold text-lg text-slate-800">{proj.name}</p>
-                            <p className="text-sm text-slate-600">Rol: {proj.role}</p>
+                            <p className="font-bold text-xl text-slate-800">{proj.name}</p>
+                            <p className="text-slate-600 font-medium">{proj.role}</p>
                         </div>
                         {proj.status && (
-                            <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                                proj.status === 'Ganador Hackathon' ? 'bg-yellow-100 text-yellow-800' :
-                                proj.status === 'Incubado' ? 'bg-purple-100 text-purple-800' :
-                                'bg-slate-100 text-slate-600'
+                            <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
+                                proj.status.includes('Ganador') ? 'bg-yellow-100 text-yellow-800' :
+                                proj.status.includes('Incubado') ? 'bg-purple-100 text-purple-800' :
+                                'bg-green-100 text-green-800'
                             }`}>
                                 {proj.status}
                             </span>
@@ -189,12 +188,16 @@ const DigitalCV: React.FC = () => {
       </Card>
 
       <Card>
-        <h2 className="text-2xl font-bold text-slate-800 mb-6">Recomendaciones Recibidas</h2>
-        <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">Recomendaciones de Pares</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profile.recommendations.map(rec => (
-                 <div key={rec.id} className="p-3 bg-slate-50 rounded-md border border-slate-200">
-                    <p className="text-slate-700">"<span className="italic">{rec.skill}</span>"</p>
-                    <p className="text-sm text-right font-semibold text-slate-500 mt-1">- {rec.peerName}</p>
+                 <div key={rec.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="text-2xl text-rose-300 mb-2">❝</div>
+                    <p className="text-slate-700 font-medium italic">{rec.skill}</p>
+                    <div className="mt-3 flex items-center justify-end gap-2">
+                        <div className="w-6 h-6 rounded-full bg-slate-300"></div>
+                        <p className="text-xs font-bold text-slate-500 uppercase">{rec.peerName}</p>
+                    </div>
                 </div>
             ))}
         </div>
@@ -202,19 +205,17 @@ const DigitalCV: React.FC = () => {
 
       <div className="flex justify-end gap-4 mt-8 print:hidden">
         <Button onClick={handlePrint} variant="secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2 inline"><path d="M6 18h12a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2Z"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="2"/></svg>
             Imprimir CV
         </Button>
         <Button>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2 inline"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
-            Compartir CV
+            Compartir Enlace Público
         </Button>
       </div>
 
        <style>{`
         @media print {
             body { margin: 0; padding: 0; }
-            .flex.h-screen, .md\:hidden, nav { display: none; }
+            .flex.h-screen, .md\:hidden, nav, header { display: none; }
             main { overflow: visible; height: auto; padding: 0 !important; margin: 0 !important;}
             #cv-section { display: block; }
             .print\\:hidden { display: none; }

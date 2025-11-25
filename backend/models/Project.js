@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose');
 
+// Esquema para las propuestas de integración
 const integrationSchema = new mongoose.Schema({
     proposerName: String,
     proposerEmail: String,
@@ -14,6 +15,14 @@ const integrationSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+// Esquema para la bitácora de avances (updates)
+const updateSchema = new mongoose.Schema({
+    date: { type: String, required: true }, // Podrías usar Date, pero string 'YYYY-MM-DD' es fácil para el MVP
+    title: { type: String, required: true },
+    description: String,
+    imageUrl: String
+});
+
 const projectSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
@@ -22,7 +31,7 @@ const projectSchema = new mongoose.Schema({
     leader: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User', // Esto crea una referencia al modelo User
+        ref: 'User',
     },
     isRecruiting: {
         type: Boolean,
@@ -43,7 +52,22 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    integrations: [integrationSchema] // Array de propuestas de integración
+    // Nuevos campos agregados para completar la funcionalidad
+    likes: {
+        type: Number,
+        default: 0
+    },
+    status: {
+        type: String,
+        enum: ['Idea', 'Prototipo', 'Validado', 'En Escala'],
+        default: 'Idea'
+    },
+    incubatedBy: {
+        type: String,
+        default: ''
+    },
+    updates: [updateSchema], // Array de bitácora
+    integrations: [integrationSchema] // Array de propuestas
 }, { timestamps: true });
 
 const Project = mongoose.model('Project', projectSchema);

@@ -23,6 +23,13 @@ export interface ProjectUpdate {
     imageUrl?: string;
 }
 
+export interface TeamMember {
+    id: string;
+    name: string;
+    role: string;
+    avatar?: string;
+}
+
 export interface Project {
   _id: string; 
   name: string;
@@ -34,6 +41,7 @@ export interface Project {
     name: string;
     email: string;
   };
+  teamMembers?: TeamMember[]; // Nuevo campo para el equipo
   isRecruiting?: boolean;
   createdAt?: string;
   // Nuevos campos para incubación y patrocinio
@@ -49,7 +57,7 @@ export interface Project {
   integrations?: IntegrationProposal[];
   // Validación Social y Ciclo de Vida
   likes?: number;
-  status?: 'Idea' | 'Prototipo' | 'Validado' | 'En Escala';
+  status?: 'Idea' | 'Prototipo' | 'Validado' | 'En Escala' | 'Finalizado';
   updates?: ProjectUpdate[]; // Bitácora de avances
 }
 
@@ -87,20 +95,28 @@ export interface CompanyChallenge {
   deadline: string;
 }
 
-// --- User Authentication ---
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-  token: string;
-}
-
 // --- Digital CV Types ---
 export interface Education {
     institution: string;
     degree: string;
     year: string;
 }
+
+// --- User Authentication ---
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  token: string;
+  // Campos extendidos de perfil
+  photoUrl?: string;
+  bio?: string;
+  location?: string;
+  interests?: string[];
+  education?: Education[];
+  softSkills?: string[]; // Habilidades blandas validadas
+}
+
 export interface CVProject {
     id: number;
     name: string;
@@ -126,11 +142,14 @@ export interface UserProfile {
     name: string;
     email: string;
     photoUrl: string;
+    bio: string; 
+    location: string; 
     interests: string[];
     education: Education[];
     projects: CVProject[];
     recommendations: Recommendation[];
-    badges: Badge[]; // Nuevas insignias
+    badges: Badge[];
+    softSkills: string[]; // Agregado para visualización en CV
 }
 
 

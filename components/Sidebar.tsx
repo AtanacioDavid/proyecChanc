@@ -28,6 +28,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, isOpen, se
       </svg>
   );
 
+  // Generar avatar consistente basado en el nombre del usuario
+  const userAvatar = user 
+    ? `https://ui-avatars.com/api/?name=${user.name}&background=f43f5e&color=fff&size=128`
+    : 'https://ui-avatars.com/api/?name=Invitado&background=cbd5e1&color=fff&size=128';
+
   return (
     <>
       {/* Overlay for mobile */}
@@ -64,9 +69,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, isOpen, se
         </nav>
         <div className="p-4 border-t border-slate-200 space-y-4">
           <div className="flex items-center space-x-3">
-            <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
-            <div>
-              <p className="font-semibold text-slate-800">{user?.name || 'Invitado'}</p>
+            <img className="w-10 h-10 rounded-full border border-slate-200" src={userAvatar} alt="User" />
+            <div className="overflow-hidden">
+              <p className="font-semibold text-slate-800 truncate">{user?.name || 'Invitado'}</p>
               <a href="#" onClick={(e) => {e.preventDefault(); setActivePage('Perfil')}} className="text-sm text-rose-500 hover:underline">Ver Perfil</a>
             </div>
           </div>
