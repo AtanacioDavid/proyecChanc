@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -10,6 +11,7 @@ import Messages from './pages/Messages';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
+import Profile from './pages/Profile';
 import { Page, User } from './types';
 
 const App: React.FC = () => {
@@ -56,6 +58,8 @@ const App: React.FC = () => {
         return <Business />;
       case 'Mensajes':
         return <Messages />;
+      case 'Perfil':
+        return <Profile setActivePage={setActivePage} />;
       default:
         return <Home setActivePage={setActivePage} />;
     }

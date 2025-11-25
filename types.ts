@@ -1,9 +1,27 @@
 
-
 import { NAV_ITEMS } from './constants';
 
 export type NavPage = typeof NAV_ITEMS[number]['name'];
-export type Page = NavPage;
+export type Page = NavPage | 'Perfil';
+
+export interface IntegrationProposal {
+    _id?: string;
+    proposerName: string;
+    proposerEmail: string;
+    title: string;
+    description: string;
+    valueAdd: string; // Cómo agrega valor
+    status: 'Pendiente' | 'Aceptada' | 'Rechazada';
+    createdAt?: string;
+}
+
+export interface ProjectUpdate {
+    id: number;
+    date: string;
+    title: string;
+    description: string;
+    imageUrl?: string;
+}
 
 export interface Project {
   _id: string; 
@@ -21,6 +39,18 @@ export interface Project {
   // Nuevos campos para incubación y patrocinio
   incubatedBy?: string; // Nombre de la empresa que incuba
   sponsors?: string[]; // Lista de empresas patrocinadoras
+  // Nuevos campos de reclutamiento y finanzas
+  neededRoles?: string[];
+  budget?: string;
+  // Campos para Marketing de Proyectos
+  videoUrl?: string; // Link al pitch
+  isFeatured?: boolean; // Si el proyecto está promocionado/destacado
+  // Campo para propuestas de integración
+  integrations?: IntegrationProposal[];
+  // Validación Social y Ciclo de Vida
+  likes?: number;
+  status?: 'Idea' | 'Prototipo' | 'Validado' | 'En Escala';
+  updates?: ProjectUpdate[]; // Bitácora de avances
 }
 
 export interface Opportunity {

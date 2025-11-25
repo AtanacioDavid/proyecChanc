@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
@@ -147,7 +148,7 @@ const Club: React.FC = () => {
     return (
         <div className="space-y-8 pb-8">
             <HeaderBanner 
-                title="Club"
+                title="Ecosistema de Crecimiento"
                 subtitle="Un ecosistema para crecer. Conecta, colabora y accede a beneficios exclusivos."
             />
             {renderContent()}

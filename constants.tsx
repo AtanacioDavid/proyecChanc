@@ -1,16 +1,24 @@
-import React from 'react';
 
-const chancL = '/imagen/chancL.png';
+import React, { useState } from 'react';
 
 export const ChancLogo = () => {
+    const [imgError, setImgError] = useState(false);
+
     return (
-        <div className="flex items-center justify-center font-sans font-bold text-2xl tracking-tight notranslate" translate="no">
-            {/* Reemplazo por SVG para asegurar visibilidad sin dependencias externas */}
-            <svg width="150" height="50" viewBox="0 0 150 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="25" cy="25" r="15" fill="#F43F5E" fillOpacity="0.2"/>
-                <circle cx="25" cy="25" r="10" fill="#F43F5E"/>
-                <text x="50" y="32" fill="#334155" fontSize="24" fontWeight="bold" fontFamily="sans-serif">CHANCE</text>
-            </svg>
+        <div className="flex items-center justify-center notranslate" translate="no">
+            {!imgError ? (
+                <img 
+                    src="/imagen/chancL.png" 
+                    alt="Chance Logo" 
+                    className="h-24 w-24 object-cover rounded-full shadow-md border-2 border-white"
+                    onError={() => setImgError(true)}
+                />
+            ) : (
+                <div className="flex items-center font-sans font-bold text-2xl tracking-tight text-slate-800">
+                    {/* Fallback visual si la imagen falla */}
+                    <span className="text-rose-500 mr-1">●</span> CHANCE
+                </div>
+            )}
         </div>
     );
 };

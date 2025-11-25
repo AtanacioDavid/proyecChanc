@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -34,76 +35,79 @@ const Landing: React.FC<LandingProps> = ({ onSwitchToLogin, onSwitchToRegister }
         <div className="space-y-20">
           <section className="text-center">
             <h1 className="text-4xl md:text-6xl font-extrabold text-slate-800 leading-tight">
-              Donde las ideas se encuentran con el talento.
+              Si la oportunidad no llega, <br />
+              <span className="text-rose-600">constrúyela tú mismo.</span>
             </h1>
-            <p className="mt-4 text-xl md:text-2xl font-light text-rose-600 max-w-3xl mx-auto">
-              No esperes a que te den la oportunidad, <span className="font-semibold">créala</span>.
-              Chance es la plataforma que conecta emprendedores con personas talentosas para construir el futuro.
+            <p className="mt-6 text-xl md:text-2xl font-light text-slate-600 max-w-3xl mx-auto">
+              Transforma la falta de experiencia en proyectos reales.
+              Valida tus habilidades, gana confianza ejecutando ideas y consolida tu propio equipo.
+              <br/>
+              <span className="font-semibold text-teal-700">Tu CV ya no es un papel, es lo que eres capaz de hacer.</span>
             </p>
             <div className="mt-8">
               <Button size="lg" onClick={onSwitchToRegister}>
-                Únete a la comunidad ✨
+                Comenzar a Crear ✨
               </Button>
             </div>
           </section>
 
           <section>
-            <h2 className="text-3xl font-bold text-slate-800 text-center mb-12">¿Qué es Chance?</h2>
+            <h2 className="text-3xl font-bold text-slate-800 text-center mb-12">Más que una plataforma, una mentalidad</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
-              <div className="p-6">
+              <div className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="text-5xl mb-4">🚀</div>
-                <h3 className="text-xl font-bold text-slate-800">Lanza tu Proyecto</h3>
-                <p className="mt-2 text-slate-600">Publica tu idea y encuentra el equipo perfecto para hacerla realidad.</p>
+                <h3 className="text-xl font-bold text-slate-800">De Junior a Fundador</h3>
+                <p className="mt-2 text-slate-600">¿No encuentras trabajo? No importa. Lanza tu propio proyecto, gana tracción y demuéstrale al mercado tu valor real.</p>
               </div>
-              <div className="p-6">
-                <div className="text-5xl mb-4">🤝</div>
-                <h3 className="text-xl font-bold text-slate-800">Encuentra Oportunidades</h3>
-                <p className="mt-2 text-slate-600">Únete a proyectos innovadores, gana experiencia y construye tu CV digital.</p>
+              <div className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-5xl mb-4">🛡️</div>
+                <h3 className="text-xl font-bold text-slate-800">Confianza Validada</h3>
+                <p className="mt-2 text-slate-600">Cada avance en tu proyecto es una validación. Gana seguridad ejecutando y recibiendo feedback real de la comunidad.</p>
               </div>
-              <div className="p-6">
-                <div className="text-5xl mb-4">🌐</div>
-                <h3 className="text-xl font-bold text-slate-800">Crea Conexiones</h3>
-                <p className="mt-2 text-slate-600">Forma parte de una comunidad de creadores, mentores e inversores.</p>
+              <div className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-5xl mb-4">💎</div>
+                <h3 className="text-xl font-bold text-slate-800">CV Digital Dinámico</h3>
+                <p className="mt-2 text-slate-600">Olvídate del PDF estático. Muestra un portafolio vivo con insignias, equipos formados y logros tangibles.</p>
               </div>
             </div>
           </section>
 
           <section>
-            <h2 className="text-3xl font-bold text-slate-800 text-center mb-12">🌟 Proyectos Destacados</h2>
+            <h2 className="text-3xl font-bold text-slate-800 text-center mb-12">🌟 Proyectos que nacieron aquí</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredProjects.map((project, index) => (
-                <Card key={index} className="hover:shadow-xl transition-shadow">
+                <Card key={index} className="hover:shadow-xl transition-shadow border-t-4 border-teal-500">
                   <h3 className="text-xl font-bold text-teal-700">{project.title}</h3>
                   <p className="mt-2 text-slate-600">{project.description}</p>
-                   <div className="text-right mt-4 text-rose-500 font-semibold">
-                       Ver más &rarr;
+                   <div className="text-right mt-4 text-rose-500 font-semibold text-sm">
+                       Ver evolución &rarr;
                    </div>
                 </Card>
               ))}
             </div>
           </section>
           
-          <section className="bg-rose-50 rounded-lg py-16">
+          <section className="bg-rose-50 rounded-2xl py-16 shadow-inner">
             <div className="container mx-auto px-6 text-center">
                 <blockquote className="max-w-4xl mx-auto text-slate-700 italic text-lg md:text-xl space-y-4">
                     <p>Aquí están los jóvenes valientes. Los que no esperan a que alguien les dé una oportunidad.</p>
                     <p>Los que deciden emprender, sumarse a un proyecto, construir desde cero. Los que no aceptan el “no tenés experiencia” como respuesta.</p>
                     <p>Los que forman equipos sólidos, sueñan en grande y actúan en consecuencia.</p>
-                    <p>Para muchos son inexpertos. Para nosotros, son talento con propósito.</p>
-                    <p className="font-semibold text-rose-600 not-italic">Porque los jóvenes que se animan a crear su propio camino… son los que están cambiando el mundo.</p>
+                    <p className="font-semibold text-rose-600 not-italic text-2xl mt-6">"El talento joven no se espera. Se activa."</p>
                 </blockquote>
             </div>
           </section>
         </div>
       </main>
 
-      <footer className="bg-white mt-20">
+      <footer className="bg-white mt-20 border-t border-slate-200">
          <div className="container mx-auto px-6 py-8 text-center text-slate-600">
-            <div className="inline-block">
+            <div className="inline-block mb-4">
               <ChancLogo />
-              <p className="text-xs text-slate-500 italic mt-1">"El talento joven no se espera. Se activa."</p>
             </div>
-            <p className="mt-4">&copy; {new Date().getFullYear()} Chance. Todos los derechos reservados.</p>
+            <div>
+                <p>&copy; {new Date().getFullYear()} Chance. Todos los derechos reservados.</p>
+            </div>
          </div>
       </footer>
     </div>

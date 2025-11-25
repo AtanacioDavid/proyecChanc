@@ -23,6 +23,14 @@ const companyChallenges: CompanyChallenge[] = [
     {id: 2, title: 'Reducir desperdicio de caucho', description: 'Buscar soluciones innovadoras para reutilizar el caucho sobrante.', company: 'Xinca SRLDel', deadline: '2025-10-30'},
 ];
 
+// Directorio de Aliados (Nueva sección)
+const allies = [
+    { id: 1, name: 'Globant', type: 'Corporativo', focus: 'Tech & Innovation', logo: '🚀' },
+    { id: 2, name: 'Banco Galicia', type: 'Banca', focus: 'Fintech & Inclusión', logo: '🏦' },
+    { id: 3, name: 'Pyme Industrial S.A.', type: 'Industria', focus: 'Automatización', logo: '🏭' },
+    { id: 4, name: 'Google for Startups', type: 'Aceleradora', focus: 'Escalamiento Global', logo: '🌐' },
+];
+
 const mockCandidates = [
     { id: 1, name: 'Sofía Martinez', skill: 'Marketing', interest: 'Ambiental', avatar: 'https://randomuser.me/api/portraits/women/44.jpg', bio: 'Especialista en redes sociales con enfoque en sustentabilidad. Ganadora Desafío Verde.' },
     { id: 2, name: 'Lucas Gomez', skill: 'Programación', interest: 'Tecnológico', avatar: 'https://randomuser.me/api/portraits/men/22.jpg', bio: 'Desarrollador Full Stack. Creador de app EduGame.' },
@@ -34,7 +42,7 @@ const Business: React.FC = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [skillFilter, setSkillFilter] = useState('');
   const [interestFilter, setInterestFilter] = useState('');
-  const [activeTab, setActiveTab] = useState<'challenges' | 'incubation' | 'sponsorship'>('incubation');
+  const [activeTab, setActiveTab] = useState<'challenges' | 'incubation' | 'sponsorship' | 'allies'>('incubation');
 
   const filteredCandidates = mockCandidates.filter(c => 
       c.skill.toLowerCase().includes(skillFilter.toLowerCase()) &&
@@ -44,7 +52,7 @@ const Business: React.FC = () => {
   return (
     <div className="space-y-8 relative">
         <HeaderBanner 
-            title={<span className="notranslate" translate="no">Chance Business</span>}
+            title="Conexión Corporativa e Impacto"
             subtitle="Conecta con el talento joven, incuba ideas y apadrina proyectos de impacto."
         />
 
@@ -67,6 +75,12 @@ const Business: React.FC = () => {
              >
                 🏢 Desafíos Corporativos
              </button>
+             <button 
+                onClick={() => setActiveTab('allies')}
+                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${activeTab === 'allies' ? 'bg-rose-500 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+             >
+                🚀 Directorio de Aliados
+             </button>
         </div>
 
         {activeTab === 'incubation' && (
@@ -80,7 +94,9 @@ const Business: React.FC = () => {
                         <Card key={p.id} className="border-2 border-transparent hover:border-purple-200 transition-all">
                             <div className="flex justify-between items-start">
                                 <h3 className="font-bold text-xl text-slate-800">{p.title}</h3>
-                                <span className="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded-full">{p.status}</span>
+                                <span className={`text-xs font-bold px-2 py-1 rounded-full ${p.status === 'Buscando Inversión' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}`}>
+                                    {p.status}
+                                </span>
                             </div>
                             <p className="text-sm text-slate-500 font-semibold mt-1">Equipo: {p.teamName}</p>
                             <p className="text-slate-600 mt-3">{p.description}</p>
@@ -88,7 +104,9 @@ const Business: React.FC = () => {
                                 {p.tags?.map(tag => <span key={tag} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">{tag}</span>)}
                             </div>
                             <div className="mt-6 flex gap-3">
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700">Ofrecer Incubación</Button>
+                                <Button className={`w-full ${p.status === 'Buscando Inversión' ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'}`}>
+                                    {p.status === 'Buscando Inversión' ? 'Ofrecer Inversión' : 'Ofrecer Incubación'}
+                                </Button>
                                 <Button variant="secondary" onClick={() => setShowInviteModal(true)}>Ver Integrantes</Button>
                             </div>
                         </Card>
@@ -146,6 +164,30 @@ const Business: React.FC = () => {
                                     <Button size="sm" variant="primary">Ver Postulantes</Button>
                                     <Button size="sm" variant="secondary">Editar</Button>
                                 </div>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            </section>
+        )}
+
+        {activeTab === 'allies' && (
+            <section className="animate-fade-in">
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+                    <h3 className="font-bold text-blue-900">Directorio de Aliados</h3>
+                    <p className="text-blue-800">Empresas e instituciones que buscan ideas frescas. Envíales tu Pitch Deck de forma privada.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {allies.map(ally => (
+                        <Card key={ally.id} className="text-center hover:shadow-lg transition-all">
+                            <div className="text-4xl mb-3">{ally.logo}</div>
+                            <h3 className="font-bold text-xl text-slate-800">{ally.name}</h3>
+                            <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">{ally.type}</span>
+                            <p className="text-sm text-slate-600 mt-4">Buscamos: {ally.focus}</p>
+                            <div className="mt-6">
+                                <Button variant="secondary" className="w-full text-sm border border-blue-200 text-blue-700 hover:bg-blue-50">
+                                    📩 Enviar Pitch Deck
+                                </Button>
                             </div>
                         </Card>
                     ))}

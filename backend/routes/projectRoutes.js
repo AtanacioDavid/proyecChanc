@@ -9,7 +9,7 @@ const { protect } = require('../middleware/authMiddleware');
 // @access  Public
 router.get('/', async (req, res) => {
     try {
-        const projects = await Project.find({}).populate('leader', 'name email').sort({ createdAt: -1 });
+        const projects = await Project.find({}).populate('leader', 'name email').sort({ isFeatured: -1, createdAt: -1 }); // Ordenar: Primero destacados, luego por fecha
         res.json(projects);
     } catch (error) {
         res.status(500).json({ message: 'Error en el servidor', error: error.message });
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 // @desc    Crear un nuevo proyecto
 // @access  Private (solo usuarios logueados)
 router.post('/', protect, async (req, res) => {
-    const { name, description, location, objectives } = req.body;
+    const { name, description, location, objectives, neededRoles, budget, videoUrl, isRecruiting } = req.body;
     try {
         const project = new Project({
             name,
@@ -28,6 +28,10 @@ router.post('/', protect, async (req, res) => {
             location,
             objectives,
             leader: req.user._id,
+            neededRoles,
+            budget,
+            videoUrl,
+            isRecruiting
         });
         const createdProject = await project.save();
         const populatedProject = await Project.findById(createdProject._id).populate('leader', 'name email');
@@ -60,6 +64,35 @@ router.put('/:id/toggle-recruitment', protect, async (req, res) => {
         const updatedProject = await Project.findById(project._id).populate('leader', 'name email');
         res.json(updatedProject);
 
+    } catch (error) {
+        res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    }
+});
+
+// @route   POST /api/projects/:id/integrate
+// @desc    Enviar una propuesta de integración a un proyecto
+// @access  Private
+router.post('/:id/integrate', protect, async (req, res) => {
+    const { title, description, valueAdd } = req.body;
+    try {
+        const project = await Project.findById(req.params.id);
+        if (!project) {
+            return res.status(404).json({ message: 'Proyecto no encontrado' });
+        }
+
+        const proposal = {
+            proposerName: req.user.name,
+            proposerEmail: req.user.email,
+            title,
+            description,
+            valueAdd,
+            status: 'Pendiente'
+        };
+
+        project.integrations.push(proposal);
+        await project.save();
+
+        res.json({ message: 'Propuesta de integración enviada exitosamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error en el servidor', error: error.message });
     }

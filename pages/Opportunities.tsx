@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
@@ -41,8 +40,8 @@ const Opportunities: React.FC = () => {
   return (
     <div className="space-y-8">
       <HeaderBanner 
-        title="Convocatorias"
-        subtitle="Encuentra oportunidades para crecer: empleo, becas, concursos y hackatones."
+        title="Desarrollo Profesional"
+        subtitle="Aquí encontrarás formación, validarás tu talento y conectarás con quien te necesita. Chance es el punto de encuentro, el impulso lo pones tú."
       />
       
       <div className="flex flex-wrap gap-2">

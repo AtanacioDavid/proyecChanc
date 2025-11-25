@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Page, User } from '../types';
 import { NAV_ITEMS, ChancLogo } from '../constants';
@@ -66,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, isOpen, se
             <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" />
             <div>
               <p className="font-semibold text-slate-800">{user?.name || 'Invitado'}</p>
-              <a href="#" onClick={(e) => {e.preventDefault(); setActivePage('CV Digital')}} className="text-sm text-rose-500 hover:underline">Ver Perfil</a>
+              <a href="#" onClick={(e) => {e.preventDefault(); setActivePage('Perfil')}} className="text-sm text-rose-500 hover:underline">Ver Perfil</a>
             </div>
           </div>
           <button

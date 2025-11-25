@@ -1,15 +1,12 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import Card from '../components/ui/Card';
-import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
-import { UserProfile, CVProject, Recommendation, Education } from '../types';
+import { UserProfile, User } from '../types';
 
-const initialProfile: UserProfile = {
-    name: 'Juan Pérez',
-    email: 'ejemplo@mail.com',
-    photoUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
+// Datos de ejemplo para rellenar el CV inicialmente
+const mockInitialData = {
     interests: ['Tecnológico'],
     education: [{ institution: 'Universidad Nacional', degree: 'Ingeniería en Sistemas', year: '2024' }],
     projects: [
@@ -26,8 +23,31 @@ const initialProfile: UserProfile = {
 const predefinedCategories = ['Social', 'Económico', 'Académico', 'Ambiental', 'Tecnológico', 'Artístico', 'Salud', 'Deportivo'];
 
 const DigitalCV: React.FC = () => {
-    const [profile, setProfile] = useState<UserProfile>(initialProfile);
+    // Estado inicial seguro
+    const [profile, setProfile] = useState<UserProfile>({
+        name: 'Usuario Invitado',
+        email: 'invitado@chance.app',
+        photoUrl: 'https://randomuser.me/api/portraits/lego/1.jpg',
+        ...mockInitialData
+    } as UserProfile); // Casting para facilitar el MVP
+
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Efecto para cargar los datos del usuario REAL logueado
+    useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+        if (storedUser) {
+            const realUser: User = JSON.parse(storedUser);
+            setProfile(prev => ({
+                ...prev,
+                name: realUser.name,
+                email: realUser.email,
+                // Mantenemos la foto aleatoria si no tiene una real guardada en BD, 
+                // o usamos una por defecto basada en el nombre para que sea consistente
+                photoUrl: prev.photoUrl.includes('randomuser') ? `https://ui-avatars.com/api/?name=${realUser.name}&background=f43f5e&color=fff&size=128` : prev.photoUrl
+            }));
+        }
+    }, []);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -68,7 +88,7 @@ const DigitalCV: React.FC = () => {
                 <img 
                     src={profile.photoUrl} 
                     alt="Foto de perfil" 
-                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-slate-200"
                 />
                 <div 
                     onClick={triggerFileInput}
@@ -87,7 +107,7 @@ const DigitalCV: React.FC = () => {
             <div className="text-center md:text-left">
                 <h2 className="text-3xl font-bold text-slate-800">{profile.name}</h2>
                 <p className="text-slate-600">{profile.email}</p>
-                <p className="text-sm text-slate-400 mt-2 italic">Haz clic en la foto para actualizarla</p>
+                <p className="text-sm text-slate-400 mt-2 italic">Este es tu perfil público visible para empresas.</p>
             </div>
         </div>
       </Card>
